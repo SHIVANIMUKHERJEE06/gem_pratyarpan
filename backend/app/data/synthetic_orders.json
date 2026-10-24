@@ -1,0 +1,113 @@
+[
+  {
+    "order_id": "GEM-ORD-2026-8801",
+    "date": "2026-10-18",
+    "buyer_department": "Directorate of Health Services, Ranchi",
+    "items": [
+      {
+        "item_id": "ITEM-101",
+        "name": "Biochemistry Analyzer Cuvettes (Pack of 500)",
+        "seller": "Apex MedTech Pvt Ltd",
+        "price": 45000.0,
+        "status": "REFUND_INITIATED",
+        "return_reason": "Damaged packaging on 4 out of 10 boxes",
+        "payment_split": {
+          "treasury_grant": 30000.0,
+          "gem_wallet": 10000.0,
+          "promotional_subsidy": 5000.0
+        },
+        "reconciliation": {
+          "seller_state": "REFUNDED",
+          "gateway_state": "SETTLED",
+          "bank_state": "CREDITED",
+          "classification": "WAITING",
+          "sla_hours_elapsed": 12
+        },
+        "idempotency_key": "IDEM-8801-101-TRY1",
+        "anomaly_tag": "ANOM-01"
+      },
+      {
+        "item_id": "ITEM-102",
+        "name": "Digital Centrifuge 4000 RPM",
+        "seller": "BioLab India Ltd",
+        "price": 100000.0,
+        "status": "ACCEPTED",
+        "payment_split": {
+          "treasury_grant": 100000.0,
+          "gem_wallet": 0.0,
+          "promotional_subsidy": 0.0
+        },
+        "reconciliation": {
+          "seller_state": "COMPLETED",
+          "gateway_state": "SETTLED",
+          "bank_state": "CREDITED",
+          "classification": "RESOLVED",
+          "sla_hours_elapsed": 0
+        }
+      }
+    ]
+  },
+  {
+    "order_id": "GEM-ORD-2026-8802",
+    "date": "2026-10-19",
+    "buyer_department": "National Informatics Centre, Vijayawada Hub",
+    "items": [
+      {
+        "item_id": "ITEM-104",
+        "name": "Enterprise 24-Port Gigabit Switch",
+        "seller": "NetMatrix Solutions",
+        "price": 89000.0,
+        "status": "RECONCILIATION_MISMATCH",
+        "return_reason": "Wrong firmware specification delivered",
+        "payment_split": {
+          "treasury_grant": 70000.0,
+          "gem_wallet": 14000.0,
+          "promotional_subsidy": 5000.0
+        },
+        "reconciliation": {
+          "seller_state": "PENDING",
+          "gateway_state": "REVERSED",
+          "bank_state": "AWAITING_RECON",
+          "classification": "STUCK",
+          "sla_hours_elapsed": 74
+        },
+        "idempotency_key": "IDEM-8802-104-TRY1",
+        "anomaly_tag": "ANOM-02"
+      }
+    ]
+  },
+  {
+    "order_id": "GEM-ORD-2026-8804",
+    "date": "2026-10-21",
+    "buyer_department": "Dept of Higher Education, Ranchi University",
+    "items": [
+      {
+        "item_id": "ITEM-109",
+        "name": "75-inch Interactive Smart Touch Panel",
+        "seller": "EduVision Technologies",
+        "price": 115000.0,
+        "status": "INSPECTION_DISPUTE",
+        "return_reason": "Screen scratch and damaged bezel on arrival",
+        "payment_split": {
+          "treasury_grant": 95000.0,
+          "gem_wallet": 20000.0,
+          "promotional_subsidy": 0.0
+        },
+        "reconciliation": {
+          "seller_state": "DISPUTED",
+          "gateway_state": "ESCROW_LOCKED",
+          "bank_state": "HELD",
+          "classification": "STUCK",
+          "sla_hours_elapsed": 52
+        },
+        "dispute": {
+          "type": "CONDITION_MISMATCH",
+          "seller_claim": "Consignee unpacked with sharp tool causing scratch; factory seal was verified before dispatch.",
+          "consignee_claim": "Damage noted in presence of delivery associate on receipt report."
+        },
+        "idempotency_key": "IDEM-8804-109-TRY1",
+        "anomaly_tag": "ANOM-04"
+      }
+    ]
+  }
+]

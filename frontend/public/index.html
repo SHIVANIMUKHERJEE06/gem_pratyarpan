@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GeM Pratyarpan | Consignee Return & Multi-Ledger Reconciliation</title>
+  <style>
+    :root {
+      --gov-navy: #0b2545;
+      --gov-blue: #133c55;
+      --gov-gold: #c88a1e;
+      --gov-green: #15803d;
+      --gov-amber: #b45309;
+      --gov-red: #b91c1c;
+      --gov-bg: #f8fafc;
+      --gov-border: #cbd5e1;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', -apple-system, Roboto, sans-serif; background: var(--gov-bg); color: #0f172a; }
+    .tricolor { height: 4px; background: linear-gradient(90deg, #ff9933 33.3%, #ffffff 33.3%, #ffffff 66.6%, #128807 66.6%); }
+    header { background: var(--gov-navy); color: #fff; padding: 14px 28px; display: flex; justify-content: space-between; align-items: center; }
+    .brand { display: flex; align-items: center; gap: 14px; }
+    .emblem { width: 38px; height: 38px; }
+    nav { background: var(--gov-blue); display: flex; padding: 0 28px; border-bottom: 2px solid var(--gov-gold); }
+    .tab { background: transparent; border: none; color: #cbd5e1; padding: 12px 18px; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; }
+    .tab.active { color: #fff; border-bottom-color: var(--gov-gold); background: rgba(255,255,255,0.06); }
+    main { max-width: 1300px; margin: 20px auto; padding: 0 20px; }
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+    .kpi { background: #fff; border: 1px solid var(--gov-border); border-radius: 8px; padding: 16px; border-top: 3px solid var(--gov-blue); }
+    .card { background: #fff; border: 1px solid var(--gov-border); border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .card-header { background: #f1f5f9; padding: 12px 20px; font-weight: 700; border-bottom: 1px solid var(--gov-border); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    th { background: #f8fafc; padding: 12px 14px; text-align: left; border-bottom: 2px solid var(--gov-border); color: #475569; }
+    td { padding: 14px; border-bottom: 1px solid var(--gov-border); }
+    .pill { display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+    .pill-green { background: #dcfce7; color: var(--gov-green); }
+    .pill-amber { background: #fef3c7; color: var(--gov-amber); }
+    .pill-red { background: #fee2e2; color: var(--gov-red); }
+    .btn { padding: 6px 12px; border-radius: 4px; font-size: 0.82rem; font-weight: 600; cursor: pointer; border: 1px solid transparent; }
+    .btn-primary { background: var(--gov-navy); color: #fff; }
+    .btn-outline { background: #fff; border-color: var(--gov-border); }
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; }
+    .modal-box { background: #fff; border-radius: 8px; width: 600px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+  </style>
+</head>
+<body>
+  <div class="tricolor"></div>
+  <header>
+    <div class="brand">
+      <svg class="emblem" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+      </svg>
+      <div>
+        <h1 style="font-size:1.2rem; font-weight:700;">GeM Pratyarpan (प्रत्यार्पण)</h1>
+        <p style="font-size:0.75rem; opacity:0.85;">Consignee Return & Multi-Ledger Reconciliation Portal</p>
+      </div>
+    </div>
+    <div style="font-size:0.8rem; background:rgba(21,128,61,0.25); border:1px solid #16a34a; padding:4px 10px; border-radius:14px; color:#fff;">
+      Ledger Sync: ACTIVE
+    </div>
+  </header>
+
+  <nav>
+    <button class="tab active" onclick="showTab('orders')">📦 Consignment Line Items</button>
+    <button class="tab" onclick="showTab('disputes')">⚖️ Inspection Disputes</button>
+    <button class="tab" onclick="showTab('recon')">🔄 3-Way Reconciliation</button>
+    <button class="tab" onclick="showTab('audit')">📜 Audit Trail</button>
+  </nav>
+
+  <main>
+    <div class="kpi-row">
+      <div class="kpi"><small>ACTIVE ITEMS</small><h3 style="margin-top:4px;">3 Line Items</h3></div>
+      <div class="kpi" style="border-top-color:var(--gov-red);"><small>RECONCILIATION</small><h3 style="margin-top:4px;">1 Stuck (>48h)</h3></div>
+      <div class="kpi" style="border-top-color:var(--gov-amber);"><small>DISPUTES</small><h3 style="margin-top:4px;">1 Hold</h3></div>
+      <div class="kpi" style="border-top-color:var(--gov-green);"><small>IDEMPOTENT PROTECTION</small><h3 style="margin-top:4px;">₹2,49,000 Safe</h3></div>
+    </div>
+
+    <div id="tab-orders" class="card">
+      <div class="card-header">Decoupled Line Item Operations</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Item & Supplier</th>
+            <th>Gross Price</th>
+            <th>Status</th>
+            <th>Reconciliation</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="orders-body">
+          <tr>
+            <td><strong>GEM-ORD-2026-8801</strong><br><small>Health Dept, Ranchi</small></td>
+            <td>Cuvettes Pack of 500<br><small>Apex MedTech</small></td>
+            <td>₹45,000</td>
+            <td><span class="pill pill-amber">Refund Initiated</span></td>
+            <td><span class="pill pill-green">Waiting (SLA OK)</span></td>
+            <td><button class="btn btn-primary" onclick="openWaterfall('GEM-ORD-2026-8801', 45000, 30000, 10000, 5000)">⚙️ Waterfall</button></td>
+          </tr>
+          <tr>
+            <td><strong>GEM-ORD-2026-8802</strong><br><small>NIC Vijayawada</small></td>
+            <td>Enterprise Switch<br><small>NetMatrix</small></td>
+            <td>₹89,000</td>
+            <td><span class="pill pill-red">3-Way Mismatch</span></td>
+            <td><span class="pill pill-red">Stuck (74h)</span></td>
+            <td><button class="btn btn-outline" onclick="alert('Auto-Escalation queued for Treasury Officer approval.')">Review</button></td>
+          </tr>
+          <tr>
+            <td><strong>GEM-ORD-2026-8804</strong><br><small>Ranchi University</small></td>
+            <td>75-inch Touch Panel<br><small>EduVision</small></td>
+            <td>₹1,15,000</td>
+            <td><span class="pill pill-amber">Inspection Hold</span></td>
+            <td><span class="pill pill-red">Stuck (52h)</span></td>
+            <td><button class="btn btn-outline" onclick="showTab('disputes')">Arbitrate</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="tab-disputes" class="card" style="display:none; padding:20px;">
+      <h3 style="margin-bottom:12px;">Inspection Arbitration: GEM-ORD-2026-8804</h3>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px;">
+        <div style="background:#fef2f2; border:1px solid #fecaca; padding:12px; border-radius:6px;">
+          <strong>Consignee Claim:</strong><br><small>Screen scratch noted in carrier receipt.</small>
+        </div>
+        <div style="background:#f0fdf4; border:1px solid #bbf7d0; padding:12px; border-radius:6px;">
+          <strong>Seller Evidence:</strong><br><small>Factory tamper seal verified on dispatch.</small>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="alert('Ruling finalized: Return approved for Consignee.')">Approve Return (Refund Buyer)</button>
+      <button class="btn btn-outline" onclick="alert('Ruling finalized: Return rejected, supplier upheld.')">Reject Return</button>
+    </div>
+
+    <div id="tab-recon" class="card" style="display:none; padding:20px;">
+      <h3>Three-Source Ledger Matrix</h3>
+      <p style="font-size:0.85rem; color:#64748b; margin-top:4px;">Cross-referencing GeM Seller Ledger vs Gateway vs PFMS Treasury.</p>
+      <table style="margin-top:14px;">
+        <tr><th>Order Line</th><th>Seller Portal</th><th>Gateway</th><th>PFMS Treasury</th><th>Status</th></tr>
+        <tr><td>GEM-ORD-8802</td><td>PENDING</td><td>REVERSED</td><td>AWAITING</td><td><span class="pill pill-red">STUCK (>48h)</span></td></tr>
+        <tr><td>GEM-ORD-8801</td><td>REFUNDED</td><td>SETTLED</td><td>CREDITED</td><td><span class="pill pill-green">RECONCILED</span></td></tr>
+      </table>
+    </div>
+
+    <div id="tab-audit" class="card" style="display:none; padding:20px;">
+      <h3>Append-Only Cryptographic Audit Log</h3>
+      <table style="margin-top:14px;">
+        <tr><th>Timestamp</th><th>Action</th><th>Actor</th><th>SHA-256 Digest</th></tr>
+        <tr><td>Just Now</td><td>WATERFALL_DISBURSED</td><td>DDO Accounts</td><td><code>8801f9a2d3e4b105</code></td></tr>
+        <tr><td>Earlier</td><td>SYSTEM_BOOT</td><td>DAEMON</td><td><code>4017a02bc71900de</code></td></tr>
+      </table>
+    </div>
+  </main>
+
+  <div class="modal-overlay" id="waterfall-modal">
+    <div class="modal-box">
+      <h3 style="margin-bottom:14px;">Refund Waterfall Engine</h3>
+      <p id="waterfall-details" style="font-size:0.88rem; line-height:1.6;"></p>
+      <div style="margin-top:18px; display:flex; justify-content:flex-end; gap:8px;">
+        <button class="btn btn-outline" onclick="closeModal()">Close</button>
+        <button class="btn btn-primary" onclick="disburseRefund()">⚡ Disburse Refund</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let executedKeys = {};
+    function showTab(t) {
+      document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('tab-orders').style.display = t === 'orders' ? 'block' : 'none';
+      document.getElementById('tab-disputes').style.display = t === 'disputes' ? 'block' : 'none';
+      document.getElementById('tab-recon').style.display = t === 'recon' ? 'block' : 'none';
+      document.getElementById('tab-audit').style.display = t === 'audit' ? 'block' : 'none';
+    }
+    function openWaterfall(id, total, treasury, wallet, sub) {
+      document.getElementById('waterfall-details').innerHTML = `
+        <strong>Order:</strong> ${id}<br>
+        <strong>PFMS Treasury Grant:</strong> ₹${treasury.toLocaleString('en-IN')}<br>
+        <strong>GeM Department Wallet:</strong> ₹${wallet.toLocaleString('en-IN')}<br>
+        <strong>Promotional Subsidy Pool:</strong> ₹${sub.toLocaleString('en-IN')}<br>
+        <hr style="margin:10px 0; border:none; border-top:1px dashed #cbd5e1;">
+        <strong>Total Line Item Disbursal:</strong> ₹${total.toLocaleString('en-IN')}
+      `;
+      document.getElementById('waterfall-modal').style.display = 'flex';
+    }
+    function disburseRefund() {
+      if (executedKeys['KEY-8801']) {
+        alert('⚠️ IDEMPOTENCY GUARD ACTIVATED: This refund has already been disbursed. Secondary request blocked to avoid duplicate debit.');
+        return;
+      }
+      executedKeys['KEY-8801'] = true;
+      alert('✅ Refund waterfall executed successfully to all respective departmental accounts!');
+      closeModal();
+    }
+    function closeModal() { document.getElementById('waterfall-modal').style.display = 'none'; }
+  </script>
+</body>
+</html>

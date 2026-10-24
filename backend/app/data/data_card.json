@@ -1,0 +1,81 @@
+{
+  "title": "GeM Pratyarpan - Seeded Edge-Case Dataset & Data Card",
+  "seeded_anomalies_count": 15,
+  "anomalies": [
+    {
+      "id": "ANOM-01",
+      "name": "Duplicate Refund Idempotency Retry",
+      "scenario": "Network timeout triggered duplicate refund webhook retry; idempotency key prevents double debit."
+    },
+    {
+      "id": "ANOM-02",
+      "name": "Three-Way Status Disagreement",
+      "scenario": "Payment gateway reports REVERSED, seller portal says PENDING, bank log shows STUCK past SLA threshold."
+    },
+    {
+      "id": "ANOM-03",
+      "name": "Courier Ghost Delivery / Premises Closed Dispute",
+      "scenario": "Courier falsely reports Consignee Unreachable; consignee GPS audit confirms office was open."
+    },
+    {
+      "id": "ANOM-04",
+      "name": "Visual Inspection Scratch Dispute",
+      "scenario": "Consignee marks Used/Scratched on 4K display; seller dispatch video shows factory seal intact."
+    },
+    {
+      "id": "ANOM-05",
+      "name": "Expired Subsidy Voucher Reversal",
+      "scenario": "Line item funded by promotional voucher that expired during return window; waterfall routes to credit note instead of lapsed pool."
+    },
+    {
+      "id": "ANOM-06",
+      "name": "Partial Return Bundled Tier Reallocation",
+      "scenario": "Returning 1 item out of 3 invalidates bulk discount; system recalculates net payable on retained goods."
+    },
+    {
+      "id": "ANOM-07",
+      "name": "Legitimate Heavy Returner False Positive",
+      "scenario": "High-volume hospital testing lab with 14 returns in 90 days trips crude fraud ladder; explainable score triggers low-friction verification."
+    },
+    {
+      "id": "ANOM-08",
+      "name": "Gateway Timeout During Ledger Release",
+      "scenario": "Bank gateway timed out mid-transaction; transaction quarantined in PENDING_VERIFICATION state."
+    },
+    {
+      "id": "ANOM-09",
+      "name": "Multi-Split Rounding Discrepancy",
+      "scenario": "Splitting Rs 14,999.99 across 3 payment instruments yields fractional paisa rounding mismatch."
+    },
+    {
+      "id": "ANOM-10",
+      "name": "Tampered Tracking Consignment Code",
+      "scenario": "Barcode checksum mismatch on return airway bill detected at initial logistics scan."
+    },
+    {
+      "id": "ANOM-11",
+      "name": "Weight Discrepancy Handover",
+      "scenario": "Server rack consignment weighed 12kg at pickup but 7kg at hub; auto-hold for package tamper."
+    },
+    {
+      "id": "ANOM-12",
+      "name": "Dormant / Closed Treasury Account",
+      "scenario": "PFMS nodal refund bounced due to financial year-end account freeze; routed to treasury escrow."
+    },
+    {
+      "id": "ANOM-13",
+      "name": "Mid-Transit Revocation by Buyer",
+      "scenario": "Consignee recalls return after realizing missing component was in adjacent warehouse."
+    },
+    {
+      "id": "ANOM-14",
+      "name": "Statutory SLA Breach by Inspector",
+      "scenario": "Inspection pending for 14 days (> 10-day limit); auto-escalates to nodal arbitration director."
+    },
+    {
+      "id": "ANOM-15",
+      "name": "Concurrent Admin Override vs System Auto-Reconcile",
+      "scenario": "Manual consignee signoff collides with automated courier sync; optimistic locking ensures data integrity."
+    }
+  ]
+}
